@@ -2,10 +2,10 @@
 {
     public enum Command
     {
-        None,
-        Shoot,
-        Jump,
-        Crouch,
-        Roll        
+        None    =   0,
+        Shoot   =   1,
+        Jump    =   2,
+        Crouch  =   3,
+        Roll    =   4        
     }
 }

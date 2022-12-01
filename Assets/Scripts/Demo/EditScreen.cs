@@ -12,35 +12,32 @@ using System;
 public class EditScreen : MonoBehaviour
 {
     [SerializeField]
-    private TMP_Dropdown x, 
-                         square,
-                         triangle,
-                         circle;
+    private TMP_Dropdown down, 
+                         left,
+                         up,
+                         right;
 
-    private Dictionary<Command, ICCommand> dictCommands;
     private Command[] commands;
-    [SerializeField]
     private List<string> commandsStringList;
 
     void Awake()
     {
-        BuildDictionary();
+        PopulateCommands();
     }
 
     void Start()
     {
-        AddOptions(KeyCode.DownArrow, x);
-        AddOptions(KeyCode.LeftArrow, square);
-        AddOptions(KeyCode.UpArrow, triangle);
-        AddOptions(KeyCode.RightArrow, circle);
+        AddOptions(KeyCode.DownArrow, down);
+        AddOptions(KeyCode.LeftArrow, left);
+        AddOptions(KeyCode.UpArrow, up);
+        AddOptions(KeyCode.RightArrow, right);
     }
 
-    void BuildDictionary()
+    void PopulateCommands()
     {
         Array commandInts = Enum.GetValues(typeof(Command));
         int index = 0;
 
-        dictCommands = new Dictionary<Command, ICCommand>();
         commandsStringList = new List<string>();
         commands = new Command[commandInts.Length];
 
@@ -50,11 +47,6 @@ public class EditScreen : MonoBehaviour
             commands[index++] = command;
             commandsStringList.Add(command.ToString());
         }
-
-        dictCommands[Command.Crouch]    =   new CrouchCommand();
-        dictCommands[Command.Jump]      =   new JumpCommand();
-        dictCommands[Command.Roll]      =   new RollCommand();
-        dictCommands[Command.Shoot]     =   new ShootCommand();
     }
 
     void AddOptions(KeyCode key, TMP_Dropdown dropdown)
@@ -70,7 +62,7 @@ public class EditScreen : MonoBehaviour
         dropdown.SetValueWithoutNotify((int)controllerCommand);
         dropdown.onValueChanged.AddListener((val) =>
         {
-            ICCommand command = dictCommands[commands[val]];
+            ICCommand command = CommandFactory.Create(commands[val]);
             InputHandler.controller.SetCommand((int)key, command);
         });
     }

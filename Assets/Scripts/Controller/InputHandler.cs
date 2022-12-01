@@ -9,10 +9,14 @@ namespace Controller
     public class InputHandler : MonoBehaviour
     {
         public static Controller controller { get; private set; }
+        public static Action<KeyCode> KeyPressEvent;
         KeyCode[] keycodes;
 
         void Awake()
         {
+            //Controller could live anywhere.
+            //I put it in this class for the 
+            //sake of convenience.
             controller = new Controller();
         }
 
@@ -28,15 +32,14 @@ namespace Controller
             }
         }
 
-        // Update is called once per frame
         void Update()
         {
             foreach (KeyCode keycode in keycodes)
             {
                 if (Input.GetKeyDown(keycode))
                 {
-                    Debug.Log(keycode.ToString());
                     controller.Execute((int)keycode);
+                    KeyPressEvent?.Invoke(keycode);
                 }                
             }            
         }
